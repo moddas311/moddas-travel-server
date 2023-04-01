@@ -24,9 +24,12 @@ async function run() {
     // collections
     const homesCollection = client.db("moddasTravelsDB").collection("homes");
     const userCollection = client.db("moddasTravelsDB").collection("users");
+    const bookingsCollection = client
+      .db("moddasTravelsDB")
+      .collection("bookings");
 
     // Save email and Generate JWT
-    app.put("user/:email", async (req, res) => {
+    app.put("/user/:email", async (req, res) => {
       const email = req.params.email;
       const user = req.body;
       const filter = { email: email };
@@ -44,13 +47,33 @@ async function run() {
       const token = jwt.sign(user, process.env.ACCESS_TOKEN, {
         expiresIn: "1d",
       });
+      console.log(token);
       res.send({ result, token });
+
+      // Save a booking
+      app.post("/bookings", async (req, res) => {
+        const bookingData = req.body;
+        const result = await bookingsCollection.insertOne(bookingData);
+        console.log(result);
+        res.send(result);
+      });
+
+      // Get All Bookings
+      app.get("/bookings", async (req, res) => {
+        let query = {};
+        const email = req.query.email;
+        if (email) {
+          query = {
+            guestEmail: email,
+          };
+        }
+
+        const booking = await bookingsCollection.find(query).toArray();
+        console.log(booking);
+        res.send(booking);
+      });
     });
-    app.get("/users", async (req, res) => {
-      const query = {};
-      const user = await userCollection.find(query).toArray();
-      res.send(user);
-    });
+
     console.log("Travels Booking Database Connected");
   } finally {
   }
