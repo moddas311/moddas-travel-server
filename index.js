@@ -50,6 +50,16 @@ async function run() {
       console.log(token);
       res.send({ result, token });
 
+      // Get a single user by email
+      app.get("/user/:email", async (req, res) => {
+        const email = req.params.email;
+        const query = { email: email };
+
+        const user = await userCollection.findOne(query);
+        console.log(user.role);
+        res.send(user);
+      });
+
       // Save a booking
       app.post("/bookings", async (req, res) => {
         const bookingData = req.body;
