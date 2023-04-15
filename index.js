@@ -60,6 +60,13 @@ async function run() {
         res.send(user);
       });
 
+      // Get all users
+      app.get("/users", async (req, res) => {
+        const users = await userCollection.find().toArray()
+        console.log(users)
+        res.send(users)
+      })
+
       // Save a booking
       app.post("/bookings", async (req, res) => {
         const bookingData = req.body;
