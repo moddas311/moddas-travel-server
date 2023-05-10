@@ -98,7 +98,6 @@ async function run() {
       const token = jwt.sign(user, process.env.ACCESS_TOKEN, {
         expiresIn: "1d",
       });
-      console.log(result);
       res.send({ result, token });
     });
 
@@ -108,7 +107,6 @@ async function run() {
       const query = {};
       const cursor = userCollection.find(query);
       const users = await cursor.toArray();
-      console.log(users);
       res.send(users);
     });
 
@@ -122,7 +120,6 @@ async function run() {
         return res.status(403).send({ message: "forbidden access" });
       }
       const user = await userCollection.findOne(query);
-      console.log(user.role);
       res.send(user);
     });
 
@@ -190,7 +187,6 @@ async function run() {
     // Post A Home
     app.post("/homes", verifyJWT, async (req, res) => {
       const home = req.body;
-      console.log(home);
       const result = await homesCollection.insertOne(home);
       res.send(result);
     });
@@ -201,7 +197,6 @@ async function run() {
       const query = {};
       const location = req.query.location;
       if (location) query.location = location;
-      console.log(query);
       const cursor = homesCollection.find(query);
       const homes = await cursor.toArray();
       res.send(homes);
@@ -235,7 +230,6 @@ async function run() {
     // Save bookings
     app.post("/bookings", verifyJWT, async (req, res) => {
       const booking = req.body;
-      console.log(booking);
       const result = await bookingsCollection.insertOne(booking);
       sendMail(
         {
